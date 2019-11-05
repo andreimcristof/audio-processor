@@ -10,3 +10,5 @@
 ## TODO
 
 left off: https://www.youtube.com/watch?v=OPSKfPWdr90&list=PLLgJJsrdwhPxa6-02-CeHW8ocwSwl2jnu&index=2
+
+tutorial audioinput https://docs.juce.com/master/tutorial_audio_device_manager.html
