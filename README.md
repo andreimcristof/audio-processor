@@ -9,6 +9,10 @@
 
 ## TODO
 
-left off: https://www.youtube.com/watch?v=OPSKfPWdr90&list=PLLgJJsrdwhPxa6-02-CeHW8ocwSwl2jnu&index=2
+left off: https://docs.juce.com/master/tutorial_playing_sound_files.html
 
-tutorial audioinput https://docs.juce.com/master/tutorial_audio_device_manager.html
+### Tutorials
+
+- [audioinput](https://docs.juce.com/master/tutorial_audio_device_manager.html)
+- [Juce tutorial - audio player](https://docs.juce.com/master/tutorial_playing_sound_files.html)
+- [ytb - audio player](https://www.youtube.com/watch?v=vVnu-L712ho)
