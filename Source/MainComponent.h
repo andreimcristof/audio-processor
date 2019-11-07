@@ -22,24 +22,10 @@ public:
   //==============================================================================
   void paint(Graphics &g) override;
   void resized() override;
-  void openButtonClicked();
-  void playButtonClicked();
-  void stopButtonClicked();
+  void onBtnRecordClick();
 
 private:
-  enum TransportState;
-
-  // {
-  //   Stopped,
-  //   Playing,
-  //   Starting,
-  //   Stopping
-  // }
-
-  TextButton openButton;
-  TextButton playButton;
-  TextButton stopButton;
-  TransportState state;
+  TextButton btnRecord;
 
   JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(MainComponent)
 };

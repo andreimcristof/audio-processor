@@ -1,14 +1,12 @@
 #include "MainComponent.h"
 
 //==============================================================================
-MainComponent::MainComponent() : openButton("open"),
-                                 playButton("play"),
-                                 stopButton("stop"),
-                                 state(Stopped)
+MainComponent::MainComponent() : btnRecord("Record")
 {
     // Make sure you set the size of the component after
     // you add any child components.
     setSize(800, 600);
+    // transportSource.addChangeListener(this);
 
     // Some platforms require permissions to open input channels so request that here
     if (RuntimePermissions::isRequired(RuntimePermissions::recordAudio) && !RuntimePermissions::isGranted(RuntimePermissions::recordAudio))
@@ -22,16 +20,8 @@ MainComponent::MainComponent() : openButton("open"),
         setAudioChannels(2, 2);
     }
 
-    openButton.onClick = [this] { openButtonClicked(); };
-    addAndMakeVisible(&openButton);
-
-    playButton.onClick = [this] { playButtonClicked(); };
-    playButton.setEnabled(true);
-    addAndMakeVisible(&playButton);
-
-    stopButton.onClick = [this] { stopButtonClicked(); };
-    stopButton.setEnabled(false);
-    addAndMakeVisible(&stopButton);
+    btnRecord.onClick = [this] { onBtnRecordClick(); };
+    addAndMakeVisible(&btnRecord);
 }
 
 MainComponent::~MainComponent()
@@ -39,6 +29,10 @@ MainComponent::~MainComponent()
     // This shuts down the audio device and clears the audio source.
     shutdownAudio();
 }
+
+// void MainComponent::changeListenerCallback(ChangeBroadcaster *source) override
+// {
+// }
 
 //==============================================================================
 void MainComponent::prepareToPlay(int samplesPerBlockExpected, double sampleRate)
@@ -85,13 +79,7 @@ void MainComponent::resized()
     // This is called when the MainContentComponent is resized.
     // If you add any child components, this is where you should
     // update their positions.
-    openButton.setBounds(10, 10, getWidth() - 20, 30);
-    playButton.setBounds(10, 50, getWidth() - 20, 30);
-    stopButton.setBounds(10, 90, getWidth() - 20, 30);
+    btnRecord.setBounds(10, 10, getWidth() - 20, 30);
 }
 
-void MainComponent::openButtonClicked() {}
-
-void MainComponent::playButtonClicked() {}
-
-void MainComponent::stopButtonClicked() {}
+void MainComponent::onBtnRecordClick() {}
