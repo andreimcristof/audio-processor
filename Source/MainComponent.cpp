@@ -3,9 +3,6 @@
 //==============================================================================
 MainComponent::MainComponent() : btnRecord("Record")
 {
-    // Make sure you set the size of the component after
-    // you add any child components.
-    setSize(800, 600);
     // transportSource.addChangeListener(this);
 
     // Some platforms require permissions to open input channels so request that here
@@ -17,20 +14,24 @@ MainComponent::MainComponent() : btnRecord("Record")
     else
     {
         // Specify the number of input and output channels that we want to open
-		int inputChannelCount = 2;
-		int outputChannelCount = 2;
+        int inputChannelCount = 2;
+        int outputChannelCount = 2;
         setAudioChannels(inputChannelCount, outputChannelCount);
     }
 
     btnRecord.onClick = [this] { onBtnRecordClick(); };
     addAndMakeVisible(&btnRecord);
 
-	sldrNoiseLevel.setRange(0.0, 0.25);
-	sldrNoiseLevel.setTextBoxStyle(Slider::TextBoxRight, false, 100, 20);
-	addAndMakeVisible(sldrNoiseLevel);
+    sldrNoiseLevel.setRange(0.0, 1.0, 0.1);
+    sldrNoiseLevel.setTextBoxStyle(Slider::TextBoxRight, false, 100, 50);
+    addAndMakeVisible(sldrNoiseLevel);
 
-	lblNoiseLevel.setText("Noise Level", NotificationType::dontSendNotification);
-	addAndMakeVisible(lblNoiseLevel);
+    lblNoiseLevel.setText("Noise Level", NotificationType::dontSendNotification);
+    addAndMakeVisible(lblNoiseLevel);
+
+    // Make sure you set the size of the component after
+    // you add any child components.
+    setSize(800, 600);
 }
 
 MainComponent::~MainComponent()
@@ -55,32 +56,43 @@ void MainComponent::prepareToPlay(int samplesPerBlockExpected, double sampleRate
     // For more details, see the help for AudioProcessor::prepareToPlay()
 }
 
-
 void MainComponent::getNextAudioBlock(const AudioSourceChannelInfo &bufferToFill)
 {
-	// Your audio-processing code goes here!
+    // Your audio-processing code goes here!
     // For more details, see the help for AudioProcessor::getNextAudioBlock()
 
     // Right now we are not producing any data, in which case we need to clear the buffer
     // (to prevent the output of random noise)
 
-	auto* device = deviceManager.getCurrentAudioDevice();
-	auto activeInputChannels = device->getActiveInputChannels();
-	auto activeOutputChannels = device->getActiveOutputChannels();
-	auto maxInputChannels = activeInputChannels.getHighestBit() + 1;
-	auto maxOutputChannels = activeOutputChannels.getHighestBit() +1;
+    auto *device = deviceManager.getCurrentAudioDevice();
+    auto activeInputChannels = device->getActiveInputChannels();
+    auto activeOutputChannels = device->getActiveOutputChannels();
+    auto maxInputChannels = activeInputChannels.getHighestBit() + 1;
+    auto maxOutputChannels = activeOutputChannels.getHighestBit() + 1;
 
-	auto level = (float)sldrNoiseLevel.getValue();
+    auto sldrLevel = (float)sldrNoiseLevel.getValue();
 
-	for (auto channel = 0; channel < maxOutputChannels; ++channel) {
-		if (!activeOutputChannels[channel] || maxInputChannels == 0)
-			outputSilenceOnlyByZeroingOutputChannelBuffer(bufferToFill, channel);
-		else {
-
-		}
-
-	}
-
+    for (auto channel = 0; channel < maxOutputChannels; ++channel)
+    {
+        if (!activeOutputChannels[channel] || maxInputChannels == 0)
+            outputSilenceOnlyByZeroingOutputChannelBuffer(bufferToFill, channel);
+        else
+        {
+            auto actualInputChannel = channel % maxInputChannels;
+            if (!activeInputChannels[channel])
+                outputSilenceOnlyByZeroingOutputChannelBuffer(bufferToFill, channel);
+            else
+            {
+                auto *inputBuffer = bufferToFill.buffer->getReadPointer(actualInputChannel, bufferToFill.startSample);
+                auto *outputBuffer = bufferToFill.buffer->getWritePointer(channel, bufferToFill.startSample);
+                for (auto sample = 0; sample < bufferToFill.numSamples; ++sample)
+                {
+                    std::cout << "adding noise on channel" << channel << "\n";
+                    outputBuffer[sample] = inputBuffer[sample] * random.nextFloat() * sldrLevel;
+                }
+            }
+        }
+    }
 
     bufferToFill.clearActiveBufferRegion();
 }
@@ -108,13 +120,14 @@ void MainComponent::resized()
     // If you add any child components, this is where you should
     // update their positions.
     btnRecord.setBounds(10, 10, getWidth() - 20, 30);
+    sldrNoiseLevel.setBounds(10, 30, getWidth() - 60, 90);
 }
 
-void MainComponent::onBtnRecordClick() {
-	
-}
-
-void MainComponent::outputSilenceOnlyByZeroingOutputChannelBuffer(const AudioSourceChannelInfo& bufferToFill, int& channelIndexToClearSoundOn)
+void MainComponent::onBtnRecordClick()
 {
-	bufferToFill.buffer->clear(channelIndexToClearSoundOn, bufferToFill.startSample, bufferToFill.numSamples);
+}
+
+void MainComponent::outputSilenceOnlyByZeroingOutputChannelBuffer(const AudioSourceChannelInfo &bufferToFill, int &channelIndexToClearSoundOn)
+{
+    bufferToFill.buffer->clear(channelIndexToClearSoundOn, bufferToFill.startSample, bufferToFill.numSamples);
 }
