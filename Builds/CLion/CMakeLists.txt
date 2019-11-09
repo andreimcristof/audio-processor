@@ -2729,7 +2729,7 @@ find_library (GL GL
 
 set_target_properties (APP PROPERTIES
     OUTPUT_NAME "NewProject"
-    CXX_STANDARD 14
+    CXX_STANDARD 17
     CXX_EXTENSIONS OFF
 )
 
@@ -2806,7 +2806,7 @@ find_library (GL GL
 
 set_target_properties (APP PROPERTIES
     OUTPUT_NAME "NewProject"
-    CXX_STANDARD 14
+    CXX_STANDARD 17
     CXX_EXTENSIONS OFF
 )
 

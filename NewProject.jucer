@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<JUCERPROJECT id="AKAOux" name="NewProject" projectType="guiapp" jucerVersion="5.4.5">
+<JUCERPROJECT id="AKAOux" name="NewProject" projectType="guiapp" jucerVersion="5.4.5"
+              cppLanguageStandard="latest">
   <MAINGROUP id="Bpb5Bu" name="NewProject">
     <GROUP id="{F0A1F9B7-141E-7266-1083-8D91902D3A0B}" name="Source">
       <FILE id="VVCU7D" name="MainComponent.h" compile="0" resource="0" file="Source/MainComponent.h"/>
@@ -37,7 +38,7 @@
         <CONFIGURATION isDebug="0" name="Release"/>
       </CONFIGURATIONS>
       <MODULEPATHS>
-        <MODULEPATH id="juce_audio_basics" path="..\..\ProgramFiles\JUCE\modules"/>
+        <MODULEPATH id="juce_audio_basics" path="../../../Programs/JUCE/modules"/>
         <MODULEPATH id="juce_audio_devices" path="../../../Programs/JUCE/modules"/>
         <MODULEPATH id="juce_audio_formats" path="../../../Programs/JUCE/modules"/>
         <MODULEPATH id="juce_audio_processors" path="../../../Programs/JUCE/modules"/>
@@ -86,7 +87,7 @@
     <MODULE id="juce_opengl" showAllCode="1" useLocalCopy="1" useGlobalPath="0"/>
   </MODULES>
   <LIVE_SETTINGS>
-    <LINUX/>
+    <LINUX buildEnabled="1"/>
     <WINDOWS/>
   </LIVE_SETTINGS>
   <JUCEOPTIONS JUCE_STRICT_REFCOUNTEDPOINTER="1"/>
