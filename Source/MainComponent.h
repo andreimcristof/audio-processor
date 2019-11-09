@@ -26,6 +26,10 @@ public:
 
 private:
   TextButton btnRecord;
+  Slider sldrNoiseLevel;
+  Label lblNoiseLevel;
+
+  void outputSilenceOnlyByZeroingOutputChannelBuffer(const AudioSourceChannelInfo &bufferToFill, int& channelIndexToClearSoundOn);
 
   JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(MainComponent)
 };

@@ -17,11 +17,20 @@ MainComponent::MainComponent() : btnRecord("Record")
     else
     {
         // Specify the number of input and output channels that we want to open
-        setAudioChannels(2, 2);
+		int inputChannelCount = 2;
+		int outputChannelCount = 2;
+        setAudioChannels(inputChannelCount, outputChannelCount);
     }
 
     btnRecord.onClick = [this] { onBtnRecordClick(); };
     addAndMakeVisible(&btnRecord);
+
+	sldrNoiseLevel.setRange(0.0, 0.25);
+	sldrNoiseLevel.setTextBoxStyle(Slider::TextBoxRight, false, 100, 20);
+	addAndMakeVisible(sldrNoiseLevel);
+
+	lblNoiseLevel.setText("Noise Level", NotificationType::dontSendNotification);
+	addAndMakeVisible(lblNoiseLevel);
 }
 
 MainComponent::~MainComponent()
@@ -46,14 +55,33 @@ void MainComponent::prepareToPlay(int samplesPerBlockExpected, double sampleRate
     // For more details, see the help for AudioProcessor::prepareToPlay()
 }
 
+
 void MainComponent::getNextAudioBlock(const AudioSourceChannelInfo &bufferToFill)
 {
-    // Your audio-processing code goes here!
-
+	// Your audio-processing code goes here!
     // For more details, see the help for AudioProcessor::getNextAudioBlock()
 
     // Right now we are not producing any data, in which case we need to clear the buffer
     // (to prevent the output of random noise)
+
+	auto* device = deviceManager.getCurrentAudioDevice();
+	auto activeInputChannels = device->getActiveInputChannels();
+	auto activeOutputChannels = device->getActiveOutputChannels();
+	auto maxInputChannels = activeInputChannels.getHighestBit() + 1;
+	auto maxOutputChannels = activeOutputChannels.getHighestBit() +1;
+
+	auto level = (float)sldrNoiseLevel.getValue();
+
+	for (auto channel = 0; channel < maxOutputChannels; ++channel) {
+		if (!activeOutputChannels[channel] || maxInputChannels == 0)
+			outputSilenceOnlyByZeroingOutputChannelBuffer(bufferToFill, channel);
+		else {
+
+		}
+
+	}
+
+
     bufferToFill.clearActiveBufferRegion();
 }
 
@@ -82,4 +110,11 @@ void MainComponent::resized()
     btnRecord.setBounds(10, 10, getWidth() - 20, 30);
 }
 
-void MainComponent::onBtnRecordClick() {}
+void MainComponent::onBtnRecordClick() {
+	
+}
+
+void MainComponent::outputSilenceOnlyByZeroingOutputChannelBuffer(const AudioSourceChannelInfo& bufferToFill, int& channelIndexToClearSoundOn)
+{
+	bufferToFill.buffer->clear(channelIndexToClearSoundOn, bufferToFill.startSample, bufferToFill.numSamples);
+}
