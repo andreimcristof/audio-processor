@@ -3,7 +3,7 @@
 //==============================================================================
 MainComponent::MainComponent(): btnRecord("Record")
 {
-	for each (AudioIODeviceType * t in deviceManager.getAvailableDeviceTypes())
+	for (AudioIODeviceType * t : deviceManager.getAvailableDeviceTypes())
 	{
 		t->scanForDevices();
 		auto lst = t->getDeviceNames();

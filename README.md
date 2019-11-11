@@ -16,3 +16,5 @@ left off: https://docs.juce.com/master/tutorial_processing_audio_input.html
 - [audioinput](https://docs.juce.com/master/tutorial_audio_device_manager.html)
 - [Juce tutorial - audio player](https://docs.juce.com/master/tutorial_playing_sound_files.html)
 - [ytb - audio player](https://www.youtube.com/watch?v=vVnu-L712ho)
+
+- [Audio Record demo](https://github.com/WeAreROLI/JUCE/blob/master/examples/Audio/AudioRecordingDemo.h)
