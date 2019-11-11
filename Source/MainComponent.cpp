@@ -1,28 +1,28 @@
 #include "MainComponent.h"
 
 //==============================================================================
-MainComponent::MainComponent(): btnRecord("Record")
+MainComponent::MainComponent() : btnRecord("Record")
 {
-	for (AudioIODeviceType * t : deviceManager.getAvailableDeviceTypes())
-	{
-		t->scanForDevices();
-		auto lst = t->getDeviceNames();
-	};
+    for (AudioIODeviceType *t : deviceManager.getAvailableDeviceTypes())
+    {
+        t->scanForDevices();
+        auto lst = t->getDeviceNames();
+    };
 
-	btnRecord.onClick = [this] { onBtnRecordClick(); };
-	addAndMakeVisible(&btnRecord);
+    btnRecord.onClick = [this] { onBtnRecordClick(); };
+    addAndMakeVisible(&btnRecord);
 
-	sldrNoiseLevel.setRange(0.0, 100.0, 0.5);
-	sldrNoiseLevel.setTextBoxStyle(Slider::TextBoxRight, false, 100, 50);
-	addAndMakeVisible(sldrNoiseLevel);
+    sldrNoiseLevel.setRange(0.0, 1.0, 0.1);
+    sldrNoiseLevel.setTextBoxStyle(Slider::TextBoxRight, false, 100, 50);
+    addAndMakeVisible(sldrNoiseLevel);
 
-	lblNoiseLevel.setText("Noise Level", NotificationType::dontSendNotification);
-	addAndMakeVisible(lblNoiseLevel);
-	// Make sure you set the size of the component after
-	// you add any child components.
-	setSize(800, 600);
+    lblNoiseLevel.setText("Noise Level", NotificationType::dontSendNotification);
+    addAndMakeVisible(lblNoiseLevel);
+    // Make sure you set the size of the component after
+    // you add any child components.
+    setSize(800, 600);
 
-	// Some platforms require permissions to open input channels so request that here
+    // Some platforms require permissions to open input channels so request that here
     if (RuntimePermissions::isRequired(RuntimePermissions::recordAudio) && !RuntimePermissions::isGranted(RuntimePermissions::recordAudio))
     {
         RuntimePermissions::request(RuntimePermissions::recordAudio,
@@ -32,8 +32,6 @@ MainComponent::MainComponent(): btnRecord("Record")
     {
         setAudioChannels(2, 2);
     }
-
-
 }
 
 MainComponent::~MainComponent()
@@ -44,12 +42,12 @@ MainComponent::~MainComponent()
 //==============================================================================
 void MainComponent::prepareToPlay(int samplesPerBlockExpected, double sampleRate)
 {
-	auto t = deviceManager.getCurrentAudioDevice()->getName();
-	String message;
-	message << "Preparing to play audio..." << newLine;
-	message << " samplesPerBlockExpected = " << samplesPerBlockExpected << newLine;
-	message << " sampleRate = " << sampleRate;
-	Logger::getCurrentLogger()->writeToLog(message);
+    auto t = deviceManager.getCurrentAudioDevice()->getName();
+    String message;
+    message << "Preparing to play audio..." << newLine;
+    message << " samplesPerBlockExpected = " << samplesPerBlockExpected << newLine;
+    message << " sampleRate = " << sampleRate;
+    Logger::getCurrentLogger()->writeToLog(message);
 }
 
 void MainComponent::getNextAudioBlock(const AudioSourceChannelInfo &bufferToFill)
@@ -57,9 +55,9 @@ void MainComponent::getNextAudioBlock(const AudioSourceChannelInfo &bufferToFill
     auto *device = deviceManager.getCurrentAudioDevice();
     auto activeInputChannels = device->getActiveInputChannels();
     auto activeOutputChannels = device->getActiveOutputChannels();
-    auto maxInputChannels = activeInputChannels.getHighestBit() +1;
-    auto maxOutputChannels = activeOutputChannels.getHighestBit() +1;
-	std::cout << "maxOutputChannels: " << maxOutputChannels;
+    auto maxInputChannels = activeInputChannels.getHighestBit() + 1;
+    auto maxOutputChannels = activeOutputChannels.getHighestBit() + 1;
+    // std::cout << "maxOutputChannels: " << maxOutputChannels;
     auto sldrLevel = (float)sldrNoiseLevel.getValue();
 
     for (auto channel = 0; channel < maxOutputChannels; ++channel)
@@ -77,7 +75,7 @@ void MainComponent::getNextAudioBlock(const AudioSourceChannelInfo &bufferToFill
                 auto *outputBuffer = bufferToFill.buffer->getWritePointer(channel, bufferToFill.startSample);
                 for (auto sample = 0; sample < bufferToFill.numSamples; ++sample)
                 {
-                    std::cout << "adding noise on channel" << channel << "\n";
+                    // std::cout << "adding noise on channel" << channel << "\n";
                     outputBuffer[sample] = inputBuffer[sample] * random.nextFloat() * sldrLevel;
                 }
             }
